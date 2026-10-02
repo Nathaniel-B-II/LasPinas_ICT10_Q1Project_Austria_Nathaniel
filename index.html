@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Skewer | ICT10 Project</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+  <style>
+    /* Reusable colors are set once here and used throughout the page. */
+    :root {
+      color-scheme: light;
+      --ink: #17283b;
+      --line: #e3e9f1;
+      --navy: #102944;
+      --page: #24477b;
+      font-family: "DM Sans", sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      color: var(--ink);
+      background: var(--page);
+    }
+
+    .topbar {
+      min-height: 34px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      color: #fff;
+      background: var(--navy);
+      border-bottom: 1px solid rgb(255 255 255 / 12%);
+    }
+
+    .brand {
+      color: #fff;
+      font-family: "Manrope", sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .navigation { display: flex; align-items: center; gap: 18px; }
+
+    .navigation button {
+      padding: 8px 0;
+      border: 0;
+      color: #9eafc4;
+      background: transparent;
+      font: 500 11px "DM Sans", sans-serif;
+      cursor: pointer;
+      transition: color 150ms ease;
+    }
+
+    .navigation button:hover,
+    .navigation button.active { color: #fff; }
+
+    main {
+      width: 100%;
+      flex: 1;
+      display: grid;
+      place-items: center;
+      padding: 28px 18px;
+    }
+
+    .panel {
+      width: min(100%, 368px);
+      overflow: hidden;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 16px 36px rgb(8 27 54 / 18%);
+      animation: arrive 360ms ease-out both;
+    }
+
+    .panel[hidden] { display: none; }
+
+    .panel-heading {
+      min-height: 71px;
+      padding: 12px 20px 13px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      text-align: center;
+      background: linear-gradient(110deg, #1470f7 0%, #362ff5 58%, #6812ec 100%);
+    }
+
+    .heading-icon { height: 22px; font-size: 20px; line-height: 22px; }
+
+    h1 {
+      margin: 2px 0 0;
+      font-family: "Manrope", sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .heading-caption { margin-top: 1px; color: #dce5ff; font-size: 9px; }
+
+    .panel-body { padding: 15px 14px 21px; }
+
+    .field { margin-bottom: 11px; }
+
+    .field label,
+    .section-title {
+      display: block;
+      margin-bottom: 5px;
+      color: #273547;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .field label span { margin-right: 5px; color: #26384a; }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      width: 100%;
+      height: 29px;
+      padding: 0 9px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      outline: none;
+      color: #243449;
+      background: #fff;
+      font: 400 10px "DM Sans", sans-serif;
+    }
+
+    input::placeholder { color: #9aa5b4; }
+
+    input:focus, select:focus {
+      border-color: #639aff;
+      box-shadow: 0 0 0 2px rgb(20 103 245 / 12%);
+    }
+
+    .primary-button {
+      width: 100%;
+      min-height: 31px;
+      margin-top: 2px;
+      border: 0;
+      border-radius: 5px;
+      color: #fff;
+      background: linear-gradient(100deg, #146bf5, #6911ed);
+      font: 700 11px "DM Sans", sans-serif;
+      cursor: pointer;
+      transition: filter 150ms ease, transform 150ms ease;
+    }
+
+    .primary-button:hover { filter: brightness(1.08); }
+    .primary-button:active { transform: translateY(1px); }
+
+    .output {
+      min-height: 34px;
+      margin: 14px 0 0;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+      color: #69788b;
+      font-size: 10px;
+      text-align: center;
+      white-space: pre-wrap;
+    }
+
+    #sku_output { color: #394b61; font-weight: 700; }
+
+    .cafe-heading { min-height: 79px; }
+    .cafe-heading h1 { font-size: 15px; }
+    .cafe-heading .heading-icon { font-size: 19px; }
+    .section-title { margin: 0 0 7px; font-size: 12px; }
+
+    .menu-list { display: grid; gap: 4px; }
+
+    .menu-item {
+      min-height: 28px;
+      padding: 0 9px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #e9edf3;
+      border-radius: 5px;
+      color: #293648;
+      font-size: 10px;
+      cursor: pointer;
+    }
+
+    .menu-item input { width: 11px; height: 11px; margin: 0; accent-color: #1769f5; }
+    .menu-name { flex: 1; }
+    .menu-price { color: #0861f5; font-size: 10px; font-weight: 700; }
+    #order-button { margin-top: 12px; }
+    .receipt-output { min-height: 37px; line-height: 1.5; }
+
+    .text-button {
+      display: block;
+      margin: 7px auto 0;
+      padding: 4px 8px;
+      border: 0;
+      color: #64748b;
+      background: transparent;
+      font: 500 10px "DM Sans", sans-serif;
+      cursor: pointer;
+    }
+
+    footer {
+      min-height: 28px;
+      display: grid;
+      place-items: center;
+      color: #e2eaf6;
+      background: rgb(13 40 72 / 35%);
+      font-size: 10px;
+    }
+
+    /* Fade the panel in while it moves slightly into place. */
+    @keyframes arrive {
+      from { opacity: 0; transform: translateY(7px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+
+
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#sku" aria-label="Skewer home">Skewer</a>
+    <nav class="navigation" aria-label="Main navigation">
+      <button id="sku-nav" class="active" type="button">▥ SKU Generator</button>
+      <button id="receipt-nav" type="button">● Receipt Generator</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="sku-view" class="panel" aria-labelledby="sku-title">
+      <header class="panel-heading">
+        <div class="heading-icon" aria-hidden="true">▥</div>
+        <h1 id="sku-title">SKU Generator</h1>
+      </header>
+      <div class="panel-body">
+        <div class="field">
+          <label for="category"><span aria-hidden="true">◆</span>Category</label>
+          <select id="category" name="category">
+            <option value="Perishables">Perishables</option>
+            <option value="Beverages">Beverages</option>
+            <option value="Snacks">Snacks</option>
+            <option value="Household">Household</option>
+            <option value="Electronics">Electronics</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="product_name"><span aria-hidden="true">▣</span>Product Name</label>
+          <input id="product_name" name="product_name" type="text" placeholder="e.g. Bottled Water" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="quantity"><span aria-hidden="true">▤</span>Stock Quantity</label>
+          <input id="quantity" name="quantity" type="number" min="0" step="1" placeholder="e.g. 50">
+        </div>
+        <button id="generate-button" class="primary-button" type="button">Generate SKU</button>
+        <p id="sku_output" class="output" aria-live="polite">Your generated SKU will appear here.</p>
+      </div>
+    </section>
+
+    <section id="receipt-view" class="panel" aria-labelledby="receipt-title" hidden>
+      <header class="panel-heading cafe-heading">
+        <div class="heading-icon" aria-hidden="true">☕</div>
+        <h1 id="receipt-title">OBMC Entrep Fair</h1>
+        <div class="heading-caption">Group 1 — Coffee Shop</div>
+      </header>
+      <div class="panel-body">
+        <h2 class="section-title"><span aria-hidden="true">☷</span> Menu</h2>
+        <div class="menu-list">
+          <label class="menu-item"><input id="item1" type="checkbox" value="99"><span class="menu-name">Americano</span><span class="menu-price">₱99</span></label>
+          <label class="menu-item"><input id="item2" type="checkbox" value="129"><span class="menu-name">Spanish Latte</span><span class="menu-price">₱129</span></label>
+          <label class="menu-item"><input id="item3" type="checkbox" value="189"><span class="menu-name">Cold Brew Malt</span><span class="menu-price">₱189</span></label>
+          <label class="menu-item"><input id="item4" type="checkbox" value="159"><span class="menu-name">Affogato</span><span class="menu-price">₱159</span></label>
+          <label class="menu-item"><input id="item5" type="checkbox" value="129"><span class="menu-name">Caramel Macchiato</span><span class="menu-price">₱129</span></label>
+        </div>
+        <button id="order-button" class="primary-button" type="button">▤ Create Order</button>
+        <p id="show" class="output receipt-output" aria-live="polite">Your order summary will appear here.</p>
+        <button id="clear-order" class="text-button" type="button">Clear receipt</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>〈/〉 SKU Generator — 1st Quarter Project</footer>
+  <script type="py" src="./main.py"></script>
+</body>
+</html>
